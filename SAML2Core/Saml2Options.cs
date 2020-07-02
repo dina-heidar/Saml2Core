@@ -376,7 +376,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
         /// The configuration manager.
         /// </value>
         public IConfigurationManager<Saml2Configuration> ConfigurationManager { get; set; }
-        public List<RequestedAttributeType> RequestedAttributes = new List<RequestedAttributeType>(new RequestedAttributeType[] //this doesnt work with ADFS
+        public List<RequestedAttributeType> RequestedAttributes { get; }= new List<RequestedAttributeType>(new RequestedAttributeType[] //this doesnt work with ADFS
         {
             new RequestedAttributeType
             {
