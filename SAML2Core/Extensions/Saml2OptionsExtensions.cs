@@ -96,33 +96,7 @@ namespace SAML2Core.Extensions
                                     index=0,
                                     isDefault =true,
                                     isDefaultSpecified = true,
-                                    RequestedAttribute = new RequestedAttributeType[] //this doesnt work with ADFS
-                                    {
-                                        new RequestedAttributeType
-                                        {
-                                            isRequired = true,
-                                            isRequiredSpecified = true,
-                                            NameFormat = "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
-                                            Name= "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
-                                            FriendlyName = "Name"
-                                        },
-                                        new RequestedAttributeType
-                                        {
-                                            isRequired = true,
-                                            isRequiredSpecified = true,
-                                            NameFormat = "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
-                                            Name = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
-                                            FriendlyName = "E-Mail-Adresses"
-                                        },
-                                        new RequestedAttributeType
-                                        {
-                                            isRequired = true,
-                                            isRequiredSpecified = true,
-                                            NameFormat = "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
-                                            Name= "nameid:persistent",
-                                            FriendlyName = "mail"
-                                        }
-                                    }
+                                    RequestedAttribute = options.RequestedAttributes.ToArray()
                                 }
                             },
                            Organization = new OrganizationType()

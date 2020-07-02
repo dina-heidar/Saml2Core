@@ -28,6 +28,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.IdentityModel.Tokens.Saml2;
 using SamlCore.AspNetCore.Authentication.Saml2.Metadata;
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using static SamlCore.AspNetCore.Authentication.Saml2.Saml2Constants;
 
@@ -375,6 +376,34 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
         /// The configuration manager.
         /// </value>
         public IConfigurationManager<Saml2Configuration> ConfigurationManager { get; set; }
+        public List<RequestedAttributeType> RequestedAttributes = new List<RequestedAttributeType>(new RequestedAttributeType[] //this doesnt work with ADFS
+        {
+            new RequestedAttributeType
+            {
+                isRequired = true,
+                isRequiredSpecified = true,
+                NameFormat = "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+                Name= "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
+                FriendlyName = "Name"
+            },
+            new RequestedAttributeType
+            {
+                isRequired = true,
+                isRequiredSpecified = true,
+                NameFormat = "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+                Name = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+                FriendlyName = "E-Mail-Adresses"
+            },
+            new RequestedAttributeType
+            {
+                isRequired = true,
+                isRequiredSpecified = true,
+                NameFormat = "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+                Name= "nameid:persistent",
+                FriendlyName = "mail"
+            }
+        });
+
         /// <summary>
         /// Gets or sets the state data format.
         /// </summary>
