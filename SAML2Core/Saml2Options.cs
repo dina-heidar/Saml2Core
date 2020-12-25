@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.IdentityModel.Tokens.Saml2;
+using SAML2Core.Models;
 using SamlCore.AspNetCore.Authentication.Saml2.Metadata;
 using System;
 using System.Security.Cryptography;
@@ -105,6 +106,14 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
             Events = new Saml2Events();
             AllowUnsolicitedLogins = false;
         }
+
+        /// <summary>
+        /// Gets or sets the requested authn context.
+        /// </summary>
+        /// <value>
+        /// The requested authn context.
+        /// </value>
+        public RequestAuth RequestedAuthn { get; set; }
 
         /// <summary>
         /// Gets or sets the bool responsible for signature validation
@@ -382,6 +391,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
         /// The state data format.
         /// </value>
         internal ISecureDataFormat<AuthenticationProperties> StateDataFormat { get; set; }
+
         /// <summary>
         /// Check that the options are valid.  Should throw an exception if things are not ok.
         /// </summary>

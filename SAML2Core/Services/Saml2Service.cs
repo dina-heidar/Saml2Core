@@ -104,8 +104,13 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
                 Destination = singleSignOnService.Location.ToString(),
                 ProtocolBinding = singleSignOnService.Binding.ToString(),
                 IssueInstant = DateTime.UtcNow,
-                AssertionConsumerServiceURL = assertionConsumerServiceUrl
+                AssertionConsumerServiceURL = assertionConsumerServiceUrl,
             };
+
+            if (options.RequestedAuthn != null)
+            {
+                authnRequest.RequestedAuthnContext = options.RequestedAuthn.RequestedAuthnContext;
+            }
 
             string singleSignOnUrl = options.Configuration.SingleSignOnServices.FirstOrDefault().Location;
 
