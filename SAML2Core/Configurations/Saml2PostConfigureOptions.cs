@@ -254,7 +254,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
                 {
                         new SPSSODescriptorType()
                         {
-                            NameIDFormat = new [] {Saml2Constants.NameIDFormats.Email},
+                            NameIDFormat = new [] {options.NameIDType.Format??Saml2Constants.NameIDFormats.Email},
                             protocolSupportEnumeration = new []{Saml2Constants.Namespaces.Protocol },
                             AuthnRequestsSignedSpecified = true,
                             AuthnRequestsSigned = options.hasCertificate,

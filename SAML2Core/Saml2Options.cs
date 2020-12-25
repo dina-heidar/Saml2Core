@@ -319,7 +319,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
         /// <value>
         /// The name identifier format.
         /// </value>
-        internal NameIDType NameIDType { get; set; }
+        public NameIDType NameIDType { get; set; }
 
         /// <summary>
         /// Gets or sets the sign out scheme.

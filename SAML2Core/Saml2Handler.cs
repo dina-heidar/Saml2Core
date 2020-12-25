@@ -143,7 +143,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
             Response.DeleteAllRequestIdCookies(Context.Request, deleteCookieOptions);
 
             //create and append new response cookie
-            Options.RequestCookieId.Name = Options.AuthenticationScheme + relayState;
+            Options.RequestCookieId.Name = Options.AuthenticationScheme + "." + relayState.GetHashCode();
             Response.Cookies.Append(Options.RequestCookieId.Name, authnRequestId, Options.RequestCookieId.Build(Context));
 
             //create authnrequest call
@@ -358,7 +358,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
             Response.DeleteAllRequestIdCookies(Context.Request, deleteCookieOptions);
 
             //create and append new response cookie
-            Options.RequestCookieId.Name = Options.AuthenticationScheme + Options.SignOutPath + relayState;
+            Options.RequestCookieId.Name = Options.AuthenticationScheme + ".Signout" + "." + relayState.GetHashCode();
             Response.Cookies.Append(Options.RequestCookieId.Name, logoutRequestId, Options.RequestCookieId.Build(Context));
             string logoutRequest = "/";
             if (Options.hasCertificate)
@@ -391,7 +391,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
                 return false;
             }
 
-            //sp initated logout reqeuest. This is the resposne recieved from the idp as a result of the sp intiated logout request.
+            //sp initated logout request. This is the resposne recieved from the idp as a result of the sp intiated logout request.
             var response = form[Saml2Constants.Parameters.SamlResponse];
             var relayState = form[Saml2Constants.Parameters.RelayState].ToString()?.DeflateDecompress();
 
@@ -401,7 +401,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
             ResponseType idpSamlResponseToken = _saml2Service.GetSamlResponseToken(base64EncodedSamlResponse, Saml2Constants.ResponseTypes.LogoutResponse, Options);
 
             IRequestCookieCollection cookies = Request.Cookies;
-            string signoutSamlRequestId = cookies[cookies.Keys.FirstOrDefault(key => key.StartsWith(Options.AuthenticationScheme + Options.SignOutPath))];
+            string signoutSamlRequestId = cookies[cookies.Keys.FirstOrDefault(key => key.StartsWith(Options.AuthenticationScheme + ".Signout"))];
 
             _saml2Service.CheckIfReplayAttack(idpSamlResponseToken.InResponseTo, signoutSamlRequestId);
             _saml2Service.CheckStatus(idpSamlResponseToken);

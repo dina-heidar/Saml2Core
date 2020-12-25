@@ -20,6 +20,7 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Linq;
 
 namespace SamlCore.AspNetCore.Authentication.Saml2
@@ -40,7 +41,8 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
             var cookies = request.Cookies;
             foreach (var cookie in cookies.Where(c => c.Key.StartsWith(Saml2Defaults.AuthenticationScheme)))
             {
-                response.Cookies.Delete(cookie.Key, options);
+                response.Cookies.Append(cookie.Key, "", new CookieOptions() { Expires = DateTime.Now.AddDays(-1) });
+                response.Cookies.Delete(cookie.Key);
             }
         }
     }
