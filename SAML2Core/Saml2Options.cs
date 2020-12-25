@@ -59,6 +59,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
             SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             SignOutScheme = AuthenticationScheme;
             AuthenticationScheme = Saml2Defaults.AuthenticationScheme;
+            SamlCookieName = Saml2Defaults.AuthenticationScheme;
             SignOutPath = new PathString("/signedout");
             CallbackPath = new PathString("/saml2-signin");
             DefaultRedirectUrl = new PathString("/");
@@ -106,6 +107,14 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
             Events = new Saml2Events();
             AllowUnsolicitedLogins = false;
         }
+
+        /// <summary>
+        /// Gets or sets the name of the saml cookie.
+        /// </summary>
+        /// <value>
+        /// The name of the saml cookie.
+        /// </value>
+        public string SamlCookieName { get; set; }
 
         /// <summary>
         /// Gets or sets the requested authn context.

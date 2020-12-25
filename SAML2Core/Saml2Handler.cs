@@ -138,12 +138,11 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
             GenerateCorrelationId(properties);
             string relayState = Options.StateDataFormat.Protect(properties);
 
-            //cleanup and remove existing cookies
-            CookieOptions deleteCookieOptions = Options.RequestCookieId.Build(Context, Clock.UtcNow);
-            Response.DeleteAllRequestIdCookies(Context.Request, deleteCookieOptions);
+            //cleanup and remove existing cookies            
+            Response.DeleteAllRequestIdCookies(Context.Request, Options.SamlCookieName);
 
             //create and append new response cookie
-            Options.RequestCookieId.Name = Options.AuthenticationScheme + "." + relayState.GetHashCode();
+            Options.RequestCookieId.Name = Options.SamlCookieName + "." + relayState.GetHashCode();
             Response.Cookies.Append(Options.RequestCookieId.Name, authnRequestId, Options.RequestCookieId.Build(Context));
 
             //create authnrequest call
@@ -213,7 +212,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
                 ResponseType idpSamlResponseToken = _saml2Service.GetSamlResponseToken(base64EncodedSamlResponse, Saml2Constants.ResponseTypes.AuthnResponse, Options);
 
                 IRequestCookieCollection cookies = Request.Cookies;
-                string originalSamlRequestId = cookies[cookies.Keys.FirstOrDefault(key => key.StartsWith(Options.AuthenticationScheme))];
+                string originalSamlRequestId = cookies[cookies.Keys.FirstOrDefault(key => key.StartsWith(Options.SamlCookieName))];
 
                 _saml2Service.CheckIfReplayAttack(idpSamlResponseToken.InResponseTo, originalSamlRequestId);
                 _saml2Service.CheckStatus(idpSamlResponseToken);
@@ -353,12 +352,11 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
             GenerateCorrelationId(properties);
             string relayState = Options.StateDataFormat.Protect(properties);
 
-            //cleanup and remove existing cookies
-            CookieOptions deleteCookieOptions = Options.RequestCookieId.Build(Context, Clock.UtcNow);
-            Response.DeleteAllRequestIdCookies(Context.Request, deleteCookieOptions);
+            //cleanup and remove existing cookies    // remove here in case logout request isn't completed       
+            //Response.DeleteAllRequestIdCookies(Context.Request, Options.SamlCookieName);
 
             //create and append new response cookie
-            Options.RequestCookieId.Name = Options.AuthenticationScheme + ".Signout" + "." + relayState.GetHashCode();
+            Options.RequestCookieId.Name = Options.SamlCookieName + ".Signout" + "." + relayState.GetHashCode();
             Response.Cookies.Append(Options.RequestCookieId.Name, logoutRequestId, Options.RequestCookieId.Build(Context));
             string logoutRequest = "/";
             if (Options.hasCertificate)
@@ -401,7 +399,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
             ResponseType idpSamlResponseToken = _saml2Service.GetSamlResponseToken(base64EncodedSamlResponse, Saml2Constants.ResponseTypes.LogoutResponse, Options);
 
             IRequestCookieCollection cookies = Request.Cookies;
-            string signoutSamlRequestId = cookies[cookies.Keys.FirstOrDefault(key => key.StartsWith(Options.AuthenticationScheme + ".Signout"))];
+            string signoutSamlRequestId = cookies[cookies.Keys.FirstOrDefault(key => key.StartsWith(Options.SamlCookieName + ".Signout"))];
 
             _saml2Service.CheckIfReplayAttack(idpSamlResponseToken.InResponseTo, signoutSamlRequestId);
             _saml2Service.CheckStatus(idpSamlResponseToken);
@@ -411,9 +409,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
                 return false;
 
             await Context.SignOutAsync(Options.SignOutScheme, authenticationProperties);
-
-            var cookieOptions = Options.RequestCookieId.Build(Context, Clock.UtcNow);
-            Context.Response.DeleteAllRequestIdCookies(Context.Request, cookieOptions);
+            Response.DeleteAllRequestIdCookies(Context.Request, Options.SamlCookieName);
 
             var redirectUrl = !string.IsNullOrEmpty(authenticationProperties.RedirectUri) ? authenticationProperties.RedirectUri : Options.DefaultRedirectUrl.ToString();
 

@@ -35,11 +35,11 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
         /// </summary>
         /// <param name="response">The response.</param>
         /// <param name="request">The request.</param>
-        /// <param name="options">The options.</param>
-        public static void DeleteAllRequestIdCookies(this HttpResponse response, HttpRequest request, CookieOptions options)
+        /// <param name="samlCookieName">Name of the saml cookie.</param>
+        public static void DeleteAllRequestIdCookies(this HttpResponse response, HttpRequest request, string samlCookieName)
         {
             var cookies = request.Cookies;
-            foreach (var cookie in cookies.Where(c => c.Key.StartsWith(Saml2Defaults.AuthenticationScheme)))
+            foreach (var cookie in cookies.Where(c => c.Key.StartsWith(samlCookieName)))
             {
                 response.Cookies.Append(cookie.Key, "", new CookieOptions() { Expires = DateTime.Now.AddDays(-1) });
                 response.Cookies.Delete(cookie.Key);
