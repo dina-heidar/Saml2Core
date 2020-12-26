@@ -70,11 +70,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configureOptions">The configure options.</param>
         /// <returns></returns>
         public static AuthenticationBuilder AddSamlCore(this AuthenticationBuilder builder, string authenticationScheme, string displayName, Action<Saml2Options> configureOptions)
-        {            
+        {
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IPostConfigureOptions<Saml2Options>, Saml2PostConfigureOptions>());
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ISaml2Service, Saml2Service>());
-            builder.Services.TryAddEnumerable(ServiceDescriptor.Transient<IDocumentRetriever, FileDocumentRetriever>());          
+            builder.Services.TryAddEnumerable(ServiceDescriptor.Transient<IDocumentRetriever, FileDocumentRetriever>());
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IHttpContextAccessor, HttpContextAccessor>());
+
             return builder.AddRemoteScheme<Saml2Options, Saml2Handler>(authenticationScheme, displayName, configureOptions);
         }
     }

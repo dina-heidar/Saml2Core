@@ -133,6 +133,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
 
             //prepare AuthnRequest ID, assertion Url and Relay State to prepare for Idp call 
             string authnRequestId = "id" + Guid.NewGuid().ToString("N");
+            string base64AuthnRequestId = authnRequestId.Base64Encode();
             string assertionConsumerServiceUrl = sendAssertionTo;
 
             GenerateCorrelationId(properties);
@@ -143,7 +144,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
 
             //create and append new response cookie
             Options.RequestCookieId.Name = Options.SamlCookieName + "." + relayState.GetHashCode();
-            Response.Cookies.Append(Options.RequestCookieId.Name, authnRequestId, Options.RequestCookieId.Build(Context));
+            Response.Cookies.Append(Options.RequestCookieId.Name, base64AuthnRequestId, Options.RequestCookieId.Build(Context));
 
             //create authnrequest call
             string authnRequest = _saml2Service.CreateAuthnRequest(Options, authnRequestId, relayState, assertionConsumerServiceUrl);
@@ -349,20 +350,25 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
 
             //prepare AuthnRequest ID, assertion Url and Relay State to prepare for Idp call 
             string logoutRequestId = "id" + Guid.NewGuid().ToString("N");
+            string base64AuthnRequestId = logoutRequestId.Base64Encode();
+
             GenerateCorrelationId(properties);
             string relayState = Options.StateDataFormat.Protect(properties);
 
-            //cleanup and remove existing cookies    // remove here in case logout request isn't completed       
+            //cleanup and remove existing cookies    
+            // remove here in case logout request isn't completed       
             //Response.DeleteAllRequestIdCookies(Context.Request, Options.SamlCookieName);
 
             //create and append new response cookie
             Options.RequestCookieId.Name = Options.SamlCookieName + ".Signout" + "." + relayState.GetHashCode();
-            Response.Cookies.Append(Options.RequestCookieId.Name, logoutRequestId, Options.RequestCookieId.Build(Context));
+            Response.Cookies.Append(Options.RequestCookieId.Name, base64AuthnRequestId, Options.RequestCookieId.Build(Context));
             string logoutRequest = "/";
             if (Options.hasCertificate)
             {
                 //create logoutrequest call
-                logoutRequest = _saml2Service.CreateLogoutRequest(Options, logoutRequestId, Context.User.FindFirst(Saml2ClaimTypes.SessionIndex).Value, Context.User.Identity.Name, relayState, sendSignoutTo);
+                logoutRequest = _saml2Service.CreateLogoutRequest(Options, logoutRequestId,
+                    Context.User.FindFirst(Saml2ClaimTypes.SessionIndex).Value,
+                    relayState, sendSignoutTo);
             }
             //call idp
             Response.Redirect(logoutRequest, true);

@@ -20,7 +20,6 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 using Microsoft.AspNetCore.Http;
-using System.Security.Cryptography;
 using System.Xml;
 
 namespace SamlCore.AspNetCore.Authentication.Saml2
@@ -89,10 +88,9 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
         /// <param name="options">The options.</param>
         /// <param name="logoutRequestId">The logout request identifier.</param>
         /// <param name="sessionIndex">Index of the session.</param>
-        /// <param name="nameId">The name identifier.</param>
         /// <param name="relayState">State of the relay.</param>
         /// <param name="signOutUrl">The sign out URL.</param>
         /// <returns></returns>
-        string CreateLogoutRequest(Saml2Options options, string logoutRequestId, string sessionIndex, string nameId, string relayState, string signOutUrl);
+        string CreateLogoutRequest(Saml2Options options, string logoutRequestId, string sessionIndex, string relayState, string signOutUrl);
     }
 }

@@ -154,12 +154,12 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
         /// <param name="options">The options.</param>
         /// <param name="logoutRequestId">The logout request identifier.</param>
         /// <param name="sessionIndex">Index of the session.</param>
-        /// <param name="nameId">The name identifier.</param>
         /// <param name="relayState">State of the relay.</param>
         /// <param name="sendSignoutTo">The send signout to.</param>
         /// <returns></returns>
+        /// <exception cref="System.ArgumentException">Signing key must be an instance of either RSA or DSA.</exception>
         /// <exception cref="ArgumentException">Signing key must be an instance of either RSA or DSA.</exception>
-        public string CreateLogoutRequest(Saml2Options options, string logoutRequestId, string sessionIndex, string nameId, string relayState, string sendSignoutTo)
+        public string CreateLogoutRequest(Saml2Options options, string logoutRequestId, string sessionIndex, string relayState, string sendSignoutTo)
         {
             NameIDType entityID = new NameIDType()
             {
@@ -359,14 +359,17 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
         /// Checks if replay attack.
         /// </summary>
         /// <param name="inResponseTo">The in response to.</param>
-        /// <param name="originalSamlRequestId">The original saml request identifier.</param>
-        /// <exception cref="Exception">
-        /// Empty protocol message id is not allowed.
+        /// <param name="base64OriginalSamlRequestId">The base64 original saml request identifier.</param>
+        /// <exception cref="System.Exception">Empty protocol message id is not allowed.
         /// or
-        /// Replay attack.
-        /// </exception>
-        public void CheckIfReplayAttack(string inResponseTo, string originalSamlRequestId)
+        /// Replay attack.</exception>
+        /// <exception cref="Exception">Empty protocol message id is not allowed.
+        /// or
+        /// Replay attack.</exception>
+        public void CheckIfReplayAttack(string inResponseTo, string base64OriginalSamlRequestId)
         {
+            string originalSamlRequestId = base64OriginalSamlRequestId.Base64Decode();
+
             if (string.IsNullOrEmpty(originalSamlRequestId) || string.IsNullOrEmpty(inResponseTo))
             {
                 throw new Exception("Empty protocol message id is not allowed.");
