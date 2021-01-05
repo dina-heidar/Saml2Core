@@ -334,6 +334,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
         public async Task SignOutAsync(AuthenticationProperties properties)
         {
             properties.Items["redirectUri"] = Options.SignOutPath;
+            bool forcedSignout = properties.GetParameter<bool>("forcedSignout");
 
             var target = ResolveTarget(Options.ForwardSignOut);
             if (target != null)
@@ -368,7 +369,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
                 //create logoutrequest call
                 logoutRequest = _saml2Service.CreateLogoutRequest(Options, logoutRequestId,
                     Context.User.FindFirst(Saml2ClaimTypes.SessionIndex).Value,
-                    relayState, sendSignoutTo);
+                    relayState, forcedSignout);
             }
             //call idp
             Response.Redirect(logoutRequest, true);

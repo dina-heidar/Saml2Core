@@ -155,11 +155,15 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
         /// <param name="logoutRequestId">The logout request identifier.</param>
         /// <param name="sessionIndex">Index of the session.</param>
         /// <param name="relayState">State of the relay.</param>
-        /// <param name="sendSignoutTo">The send signout to.</param>
+        /// <param name="forcedSignout">if set to <c>true</c> [forced signout].</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentException">Signing key must be an instance of either RSA or DSA.</exception>
         /// <exception cref="ArgumentException">Signing key must be an instance of either RSA or DSA.</exception>
-        public string CreateLogoutRequest(Saml2Options options, string logoutRequestId, string sessionIndex, string relayState, string sendSignoutTo)
+        public string CreateLogoutRequest(Saml2Options options,
+            string logoutRequestId,
+            string sessionIndex,
+            string relayState,
+            bool forcedSignout = false)
         {
             NameIDType entityID = new NameIDType()
             {
@@ -173,7 +177,7 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
                 ID = logoutRequestId,
                 Issuer = entityID,
                 Version = Saml2Constants.Version,
-                Reason = Saml2Constants.Reasons.User,
+                Reason = (forcedSignout == false ? Saml2Constants.Reasons.User : Saml2Constants.Reasons.Admin),
                 SessionIndex = new string[] { sessionIndex },
                 Destination = singleLogoutService.Location.ToString(),
                 IssueInstant = DateTime.UtcNow,

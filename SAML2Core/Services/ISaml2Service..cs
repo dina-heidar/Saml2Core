@@ -89,8 +89,9 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
         /// <param name="logoutRequestId">The logout request identifier.</param>
         /// <param name="sessionIndex">Index of the session.</param>
         /// <param name="relayState">State of the relay.</param>
-        /// <param name="signOutUrl">The sign out URL.</param>
+        /// <param name="forcedSignout">if set to <c>true</c> [forced signout].</param>
         /// <returns></returns>
-        string CreateLogoutRequest(Saml2Options options, string logoutRequestId, string sessionIndex, string relayState, string signOutUrl);
+        string CreateLogoutRequest(Saml2Options options,
+            string logoutRequestId, string sessionIndex, string relayState, bool forcedSignout);
     }
 }
