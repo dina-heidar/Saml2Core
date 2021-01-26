@@ -369,7 +369,8 @@ namespace SamlCore.AspNetCore.Authentication.Saml2
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.LoadXml(xmlTemplate);
                 xmlDoc.PreserveWhitespace = true;
-                xmlDoc.Save(options.DefaultMetadataFolderLocation + "\\" + options.DefaultMetadataFileName + ".xml");
+                
+                xmlDoc.Save(System.IO.Path.Combine(options.defaultMetadataFolderLocation, options.defaultMetadataFileName + ".xml"));
             }
         }
     }
